@@ -1,31 +1,141 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import MealCard from "../components/MealCard";
+import FavoriteList from "../components/FavoriteList";
 
 const meals = [
-  { name: "Chicken Shawarma", type: "Lebanese", time: "10 min", mood: "Fast" },
-  { name: "Margherita Pizza", type: "Italian", time: "20 min", mood: "Comfort" },
-  { name: "Beef Burger", type: "American", time: "15 min", mood: "Heavy" },
-  { name: "Chicken Pasta", type: "Italian", time: "25 min", mood: "Creamy" },
-  { name: "Caesar Salad", type: "Healthy", time: "8 min", mood: "Light" },
-  { name: "Sushi Rolls", type: "Japanese", time: "30 min", mood: "Fresh" },
-  { name: "Tacos", type: "Mexican", time: "15 min", mood: "Spicy" },
-  { name: "Grilled Steak", type: "High Protein", time: "25 min", mood: "Strong" },
-  { name: "Falafel Wrap", type: "Lebanese", time: "10 min", mood: "Budget" },
-  { name: "Chicken Rice Bowl", type: "Fitness", time: "20 min", mood: "Clean" }
+  {
+    name: "Chicken Shawarma",
+    type: "Lebanese",
+    time: "10 min",
+    level: "Easy",
+    mood: "Fast",
+    emoji: "🌯",
+    description: "A quick Lebanese meal idea perfect when you want something tasty and fast."
+  },
+  {
+    name: "Margherita Pizza",
+    type: "Italian",
+    time: "20 min",
+    level: "Medium",
+    mood: "Comfort",
+    emoji: "🍕",
+    description: "A simple and classic pizza choice for a comfortable meal."
+  },
+  {
+    name: "Beef Burger",
+    type: "American",
+    time: "15 min",
+    level: "Easy",
+    mood: "Heavy",
+    emoji: "🍔",
+    description: "A filling meal idea for when you want something strong and satisfying."
+  },
+  {
+    name: "Chicken Pasta",
+    type: "Italian",
+    time: "25 min",
+    level: "Medium",
+    mood: "Creamy",
+    emoji: "🍝",
+    description: "A rich pasta meal idea that works well for lunch or dinner."
+  },
+  {
+    name: "Caesar Salad",
+    type: "Healthy",
+    time: "8 min",
+    level: "Easy",
+    mood: "Light",
+    emoji: "🥗",
+    description: "A lighter meal idea for users who want something fresh."
+  },
+  {
+    name: "Sushi Rolls",
+    type: "Japanese",
+    time: "30 min",
+    level: "Hard",
+    mood: "Fresh",
+    emoji: "🍣",
+    description: "A fresh and unique meal idea for users who want something different."
+  },
+  {
+    name: "Tacos",
+    type: "Mexican",
+    time: "15 min",
+    level: "Easy",
+    mood: "Spicy",
+    emoji: "🌮",
+    description: "A fun and spicy meal option with a fast preparation style."
+  },
+  {
+    name: "Grilled Steak",
+    type: "High Protein",
+    time: "25 min",
+    level: "Medium",
+    mood: "Strong",
+    emoji: "🥩",
+    description: "A protein-focused meal idea for users who want a strong dinner."
+  },
+  {
+    name: "Falafel Wrap",
+    type: "Lebanese",
+    time: "10 min",
+    level: "Easy",
+    mood: "Budget",
+    emoji: "🧆",
+    description: "A budget-friendly Lebanese meal idea that is fast and delicious."
+  },
+  {
+    name: "Chicken Rice Bowl",
+    type: "Fitness",
+    time: "20 min",
+    level: "Easy",
+    mood: "Clean",
+    emoji: "🍚",
+    description: "A balanced meal idea for users who prefer a clean and simple option."
+  }
 ];
 
 export default function Home() {
   const [meal, setMeal] = useState(meals[0]);
   const [favorites, setFavorites] = useState([]);
+  const [generatedCount, setGeneratedCount] = useState(0);
+
+  useEffect(() => {
+    const savedFavorites = localStorage.getItem("quickmealFavorites");
+    const savedCount = localStorage.getItem("quickmealGeneratedCount");
+
+    if (savedFavorites) {
+      setFavorites(JSON.parse(savedFavorites));
+    }
+
+    if (savedCount) {
+      setGeneratedCount(Number(savedCount));
+    }
+  }, []);
+
+  useEffect(() => {
+    localStorage.setItem("quickmealFavorites", JSON.stringify(favorites));
+  }, [favorites]);
+
+  useEffect(() => {
+    localStorage.setItem("quickmealGeneratedCount", String(generatedCount));
+  }, [generatedCount]);
 
   const generateMeal = () => {
-    const randomMeal = meals[Math.floor(Math.random() * meals.length)];
+    let randomMeal = meals[Math.floor(Math.random() * meals.length)];
+
+    if (randomMeal.name === meal.name && meals.length > 1) {
+      randomMeal = meals[Math.floor(Math.random() * meals.length)];
+    }
+
     setMeal(randomMeal);
+    setGeneratedCount(generatedCount + 1);
   };
 
   const saveFavorite = () => {
-    const exists = favorites.find((item) => item.name === meal.name);
+    const alreadySaved = favorites.some((item) => item.name === meal.name);
 
-    if (!exists) {
+    if (!alreadySaved) {
       setFavorites([...favorites, meal]);
     }
   };
@@ -34,82 +144,57 @@ export default function Home() {
     setFavorites(favorites.filter((item) => item.name !== mealName));
   };
 
+  const clearFavorites = () => {
+    setFavorites([]);
+  };
+
   return (
-    <main className="page hero-page">
+    <main className="page">
       <section className="hero">
         <div className="hero-content">
-          <p className="tag">Smart meal ideas in seconds</p>
+          <span className="tag">React frontend application</span>
           <h1>Find your next meal without overthinking.</h1>
-          <p className="hero-text">
-            QuickMeal Finder gives you fast meal ideas with a clean, modern, and responsive interface.
+          <p>
+            QuickMeal Finder is a modern web app that gives users instant meal ideas,
+            saves favorite meals, and provides a clean responsive experience.
           </p>
 
           <div className="hero-actions">
-            <button onClick={generateMeal} className="primary-btn">
+            <button className="primary-btn" onClick={generateMeal}>
               Generate Meal
             </button>
-            <button onClick={saveFavorite} className="secondary-btn">
-              Save Favorite
+
+            <button className="secondary-btn" onClick={saveFavorite}>
+              Save Current Meal
             </button>
           </div>
         </div>
 
-        <div className="meal-card">
-          <div className="meal-badge">{meal.mood}</div>
-          <h2>{meal.name}</h2>
-
-          <div className="meal-info">
-            <span>{meal.type}</span>
-            <span>{meal.time}</span>
-          </div>
-
-          <p>
-            A quick suggestion designed to help users decide what to eat faster.
-          </p>
-        </div>
+        <MealCard meal={meal} onSave={saveFavorite} />
       </section>
 
       <section className="stats-grid">
         <div className="stat-card">
-          <h3>10+</h3>
-          <p>Meal ideas</p>
+          <h3>{generatedCount}</h3>
+          <p>Meals Generated</p>
+        </div>
+
+        <div className="stat-card">
+          <h3>{favorites.length}</h3>
+          <p>Saved Favorites</p>
         </div>
 
         <div className="stat-card">
           <h3>4</h3>
-          <p>React pages</p>
-        </div>
-
-        <div className="stat-card">
-          <h3>100%</h3>
-          <p>Responsive UI</p>
+          <p>React Pages</p>
         </div>
       </section>
 
-      <section className="favorites-section">
-        <div className="section-title">
-          <p className="tag">Saved meals</p>
-          <h2>Your Favorites</h2>
-        </div>
-
-        {favorites.length === 0 ? (
-          <div className="empty-card">
-            <p>No favorites saved yet. Generate a meal and save it.</p>
-          </div>
-        ) : (
-          <div className="favorites-grid">
-            {favorites.map((item) => (
-              <div className="favorite-card" key={item.name}>
-                <h3>{item.name}</h3>
-                <p>{item.type} • {item.time}</p>
-                <button onClick={() => removeFavorite(item.name)}>
-                  Remove
-                </button>
-              </div>
-            ))}
-          </div>
-        )}
-      </section>
+      <FavoriteList
+        favorites={favorites}
+        onRemove={removeFavorite}
+        onClear={clearFavorites}
+      />
     </main>
   );
 }

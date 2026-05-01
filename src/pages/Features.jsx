@@ -2,32 +2,32 @@ const features = [
   {
     icon: "🎲",
     title: "Random Meal Generator",
-    text: "Generates a meal suggestion instantly with one click."
+    text: "Generates a new meal idea instantly with one click."
   },
   {
     icon: "❤️",
-    title: "Favorites List",
-    text: "Users can save meal ideas they like and remove them later."
+    title: "Favorites System",
+    text: "Users can save meals they like and remove them later."
+  },
+  {
+    icon: "💾",
+    title: "Local Storage",
+    text: "Favorites and generated count stay saved after refreshing the page."
   },
   {
     icon: "📱",
     title: "Responsive Design",
-    text: "The layout works properly on desktop, tablet, and mobile screens."
+    text: "The layout adapts to desktop, tablet, and mobile screens."
   },
   {
-    icon: "⚡",
-    title: "Fast Experience",
-    text: "The app is lightweight, simple, and quick to use."
+    icon: "⚛️",
+    title: "React Components",
+    text: "The app is organized using reusable components and separate pages."
   },
   {
     icon: "🎨",
     title: "Modern UI",
-    text: "The design uses glass cards, gradients, smooth hover effects, and clean spacing."
-  },
-  {
-    icon: "🧩",
-    title: "React Components",
-    text: "The project is organized using reusable React pages and components."
+    text: "Glassmorphism, gradients, animations, and clean spacing improve the user experience."
   }
 ];
 
@@ -35,10 +35,11 @@ export default function Features() {
   return (
     <main className="page">
       <section className="content-hero">
-        <p className="tag">Application features</p>
-        <h1>Built with useful features and a clean frontend structure.</h1>
+        <span className="tag">Application features</span>
+        <h1>Designed to be functional, clean, and easy to use.</h1>
         <p>
-          This page highlights the core features included in QuickMeal Finder for Phase 2.
+          QuickMeal Finder includes practical frontend features that improve usability and
+          demonstrate ReactJS skills.
         </p>
       </section>
 
